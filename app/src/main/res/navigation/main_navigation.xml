@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.aplikasistoryapp.ui.login.LoginFragment"
+        android:name="com.example.aplikasistoryapp.presentation.login.LoginFragment"
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login">
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="com.example.aplikasistoryapp.ui.registration.RegistrationFragment"
+        android:name="com.example.aplikasistoryapp.presentation.registration.RegistrationFragment"
         android:label="RegistrationFragment"
         tools:layout="@layout/fragment_registration">
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/storyFragment"
-        android:name="com.example.aplikasistoryapp.ui.story.StoryFragment"
+        android:name="com.example.aplikasistoryapp.presentation.story.StoryFragment"
         android:label="fragment_story"
         tools:layout="@layout/fragment_story" >
         <action
@@ -40,10 +40,13 @@
         <action
             android:id="@+id/action_storyFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_storyFragment"
+            app:destination="@id/storyFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.example.aplikasistoryapp.ui.detail.DetailFragment"
+        android:name="com.example.aplikasistoryapp.presentation.detail.DetailFragment"
         android:label="fragment_detail"
         tools:layout="@layout/fragment_detail" >
         <action
@@ -52,7 +55,7 @@
     </fragment>
     <fragment
         android:id="@+id/addStoryFragment"
-        android:name="com.example.aplikasistoryapp.ui.addstory.AddStoryFragment"
+        android:name="com.example.aplikasistoryapp.presentation.addstory.AddStoryFragment"
         android:label="AddStoryFragment"
         tools:layout="@layout/fragment_add_story"
         >

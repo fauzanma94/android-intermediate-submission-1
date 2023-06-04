@@ -1,16 +1,13 @@
 package com.example.aplikasistoryapp.data.local.store
 
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.preferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.aplikasistoryapp.data.entity.UsersEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-
 
 
 class Preference private constructor(private val dataStore: DataStore<Preferences>){
@@ -54,16 +51,11 @@ class Preference private constructor(private val dataStore: DataStore<Preference
         }
     }
 
-    suspend fun userLogin(){
-        dataStore.edit { preferences ->
-            preferences[LOGIN_STATE_KEY] = true
-        }
-    }
-
     suspend fun userLogout(){
         dataStore.edit { preferences ->
             preferences[LOGIN_STATE_KEY] = false
             preferences.remove(LOGIN_STATE_KEY)
+//            preferences.remove(TOKEN_KEY)
         }
     }
 }

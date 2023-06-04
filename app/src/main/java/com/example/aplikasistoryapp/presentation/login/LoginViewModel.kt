@@ -1,8 +1,6 @@
-package com.example.aplikasistoryapp.ui.login
+package com.example.aplikasistoryapp.presentation.login
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.aplikasistoryapp.data.entity.UsersEntity
 import com.example.aplikasistoryapp.data.local.store.Preference
@@ -16,5 +14,4 @@ class LoginViewModel (private val preferences: Preference): ViewModel(){
         }
     }
 
-    fun getUser(): LiveData<UsersEntity> = preferences.getUser().asLiveData()
 }

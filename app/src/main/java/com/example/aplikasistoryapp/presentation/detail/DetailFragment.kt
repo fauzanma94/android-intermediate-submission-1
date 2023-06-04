@@ -1,4 +1,4 @@
-package com.example.aplikasistoryapp.ui.detail
+package com.example.aplikasistoryapp.presentation.detail
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -24,6 +24,7 @@ class DetailFragment : Fragment() {
         }
 
         //Data ini diambil dari data yang ada pada menu storyFragment
+        @Suppress("DEPRECATION")
         val data = arguments?.getParcelable<StoryUser>(EXTRA_DATA)
         if (data != null) {
             storyName = data.name
@@ -41,9 +42,8 @@ class DetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentDetailBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 

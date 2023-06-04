@@ -1,17 +1,14 @@
-package com.example.aplikasistoryapp.ui.addstory
+package com.example.aplikasistoryapp.presentation.addstory
 
 import android.app.Activity.RESULT_OK
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,18 +20,18 @@ import androidx.core.content.FileProvider
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.aplikasistoryapp.R
-import com.example.aplikasistoryapp.data.ViewModelFactory
+import com.example.aplikasistoryapp.data.factory.ViewModelFactory
 import com.example.aplikasistoryapp.data.api.ApiConfig
 import com.example.aplikasistoryapp.data.local.store.Preference
 import com.example.aplikasistoryapp.data.response.addstory.AddStoryResponse
 import com.example.aplikasistoryapp.databinding.FragmentAddStoryBinding
-import com.example.aplikasistoryapp.ui.login.LoginViewModel
-import com.example.aplikasistoryapp.ui.story.UserViewModel
-import com.example.aplikasistoryapp.utils.createCustomTempFile
-import com.example.aplikasistoryapp.utils.uriToFile
+import com.example.aplikasistoryapp.presentation.story.UserViewModel
+import com.example.aplikasistoryapp.domain.utils.createCustomTempFile
+import com.example.aplikasistoryapp.domain.utils.uriToFile
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -55,15 +52,15 @@ class AddStoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(!allPermissionsGranted()){
+        if (!allPermissionsGranted()) {
             requestPermission()
         }
 
         configurationViewModel(requireContext())
 
-        binding.galleryButton.setOnClickListener{startGallery()}
-        binding.cameraButton.setOnClickListener{startCamera()}
-        binding.uploadButton.setOnClickListener{
+        binding.galleryButton.setOnClickListener { startGallery() }
+        binding.cameraButton.setOnClickListener { startCamera() }
+        binding.uploadButton.setOnClickListener {
             uploadImage()
         }
 
@@ -72,18 +69,17 @@ class AddStoryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentAddStoryBinding.inflate(layoutInflater,container,false)
+    ): View {
+        binding = FragmentAddStoryBinding.inflate(layoutInflater, container, false)
         return binding.root
 
     }
 
 
-
     private val launcherIntentGallery = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ){ result ->
-        if(result.resultCode == RESULT_OK){
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
             val selectedImg = result.data?.data as Uri
             selectedImg.let { uri ->
                 val myFile = uriToFile(uri, requireContext())
@@ -101,7 +97,7 @@ class AddStoryFragment : Fragment() {
 //            val imageBitmap = it.data?.extras?.get("data") as Bitmap
 //            binding.storyImage.setImageBitmap(imageBitmap)
             val myFile = File(currentPhotoPath)
-            myFile.let{file ->
+            myFile.let { file ->
                 getFile = file
                 binding.storyImage.setImageBitmap(BitmapFactory.decodeFile(file.path))
             }
@@ -109,16 +105,15 @@ class AddStoryFragment : Fragment() {
     }
 
 
-
     private fun startGallery() {
         val intent = Intent()
         intent.action = Intent.ACTION_GET_CONTENT
         intent.type = "image/*"
-        val chooser = Intent.createChooser(intent,"Choose a Picture")
+        val chooser = Intent.createChooser(intent, "Pilih Gambar")
         launcherIntentGallery.launch(chooser)
     }
 
-    private fun startCamera(){
+    private fun startCamera() {
         val context = requireContext()
         val packageManager: PackageManager = context.packageManager
         val application: Application = context.applicationContext as Application
@@ -133,34 +128,36 @@ class AddStoryFragment : Fragment() {
             )
 
             currentPhotoPath = it.absolutePath
-            intent.putExtra(MediaStore.EXTRA_OUTPUT,photoURI)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
             launcherIntentCamera.launch(intent)
         }
     }
 
-    private fun requestPermission(){
+    private fun requestPermission() {
         val permission = REQUIRED_PERMISSIONS
-        permission.any{
-            ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),it)
+        permission.any {
+            ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), it)
         }
 
         val requestPermission = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permission ->
             val granted = permission.all { it.value }
-            if(granted){
-                Toast.makeText(requireContext(),"Mendapat izin",Toast.LENGTH_SHORT).show()
-            } else{
-                if(!permission.entries.all {
-                    ActivityCompat.shouldShowRequestPermissionRationale(
-                        requireActivity(),
-                        it.key
-                    )
+            if (granted) {
+                Toast.makeText(requireContext(), "Mendapat izin", Toast.LENGTH_SHORT).show()
+            } else {
+                if (!permission.entries.all {
+                        ActivityCompat.shouldShowRequestPermissionRationale(
+                            requireActivity(),
+                            it.key
+                        )
                     }
-                )  {
-                    Toast.makeText(requireContext(),"Tidak mendapatkan izin",Toast.LENGTH_SHORT).show()
-                } else{
-                    Toast.makeText(requireContext(),"Tidak mendapatkan izin",Toast.LENGTH_SHORT).show()
+                ) {
+                    Toast.makeText(requireContext(), "Tidak mendapatkan izin", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    Toast.makeText(requireContext(), "Tidak mendapatkan izin", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -174,11 +171,12 @@ class AddStoryFragment : Fragment() {
         ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun uploadImage(){
-        if(getFile != null){
+    private fun uploadImage() {
+        if (getFile != null) {
             val file = getFile as File
 
-            val description = binding.description.text.toString().toRequestBody("text/plain".toMediaType())
+            val description =
+                binding.description.text.toString().toRequestBody("text/plain".toMediaType())
             val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
             val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
                 "photo",
@@ -186,26 +184,34 @@ class AddStoryFragment : Fragment() {
                 requestImageFile
             )
 
-            userViewModel.getUser().observe(viewLifecycleOwner){ user ->
-                if(user._isLogin){
+            userViewModel.getUser().observe(viewLifecycleOwner) { user ->
+                if (user._isLogin) {
                     val client = ApiConfig.getApiService().addNewStory(
                         "Bearer ${user.token}",
                         description,
                         imageMultipart
                     )
-                    client.enqueue(object : Callback<AddStoryResponse>{
+                    client.enqueue(object : Callback<AddStoryResponse> {
                         override fun onResponse(
                             call: Call<AddStoryResponse>,
                             response: Response<AddStoryResponse>
                         ) {
-                            if(response.isSuccessful){
+                            if (response.isSuccessful) {
                                 val responseBody = response.body()
-                                if(responseBody != null && !responseBody.error){
+                                if (responseBody != null && !responseBody.error) {
                                     findNavController().navigate(R.id.action_addStoryFragment_to_storyFragment)
-                                    Toast.makeText(requireContext(),responseBody.message,Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        requireContext(),
+                                        responseBody.message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             } else {
-                                Toast.makeText(requireContext(), response.message(), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    requireContext(),
+                                    response.message(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
 
@@ -216,18 +222,20 @@ class AddStoryFragment : Fragment() {
                     })
                 }
             }
-        } else{
-            Toast.makeText(requireContext(), "Upload Gambar terlebih dahulu", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), "Upload Gambar terlebih dahulu", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
-    private fun configurationViewModel(context: Context){
+    private fun configurationViewModel(context: Context) {
         val dataStore: DataStore<Preferences> = context.dataStore
         userViewModel = ViewModelProvider(
             this,
             ViewModelFactory(
                 Preference
-                    .getInstance(dataStore))
+                    .getInstance(dataStore)
+            )
         )[UserViewModel::class.java]
 
     }

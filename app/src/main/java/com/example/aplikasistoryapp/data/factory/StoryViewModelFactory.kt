@@ -1,10 +1,11 @@
-package com.example.aplikasistoryapp.data
+package com.example.aplikasistoryapp.data.factory
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.aplikasistoryapp.data.Injection
 import com.example.aplikasistoryapp.data.local.repository.AllStoryRepository
-import com.example.aplikasistoryapp.ui.story.StoryViewModel
+import com.example.aplikasistoryapp.presentation.story.StoryViewModel
 
 class StoryViewModelFactory (private val allStoryRepository: AllStoryRepository)
         : ViewModelProvider.NewInstanceFactory(){

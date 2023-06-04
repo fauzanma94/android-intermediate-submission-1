@@ -1,16 +1,11 @@
-package com.example.aplikasistoryapp.ui
+package com.example.aplikasistoryapp.presentation
 
 import android.content.Context
 import android.graphics.Canvas
-import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.widget.AppCompatEditText
 
 

@@ -1,10 +1,9 @@
 package com.example.aplikasistoryapp.data.api
 
 import com.example.aplikasistoryapp.data.response.addstory.AddStoryResponse
-import com.example.aplikasistoryapp.data.response.story.AllStoriesResponse
 import com.example.aplikasistoryapp.data.response.login.LoginResponse
 import com.example.aplikasistoryapp.data.response.registration.RegistrationResponse
-import com.example.aplikasistoryapp.data.response.story.ListStoryResponse
+import com.example.aplikasistoryapp.data.response.story.AllStoriesResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -18,21 +17,21 @@ import retrofit2.http.Part
 import retrofit2.http.Query
 
 
-interface ApiService{
+interface ApiService {
     @FormUrlEncoded
     @POST("register")
     fun postRegistration(
         @Field("name") name: String,
-        @Field("email") email:String,
+        @Field("email") email: String,
         @Field("password") password: String
-    ):Call<RegistrationResponse>
+    ): Call<RegistrationResponse>
 
     @FormUrlEncoded
     @POST("login")
     fun postLogin(
         @Field("email") email: String,
         @Field("password") password: String
-    ):Call<LoginResponse>
+    ): Call<LoginResponse>
 
     @Multipart
     @POST("stories")
@@ -40,14 +39,14 @@ interface ApiService{
         @Header("Authorization") token: String,
         @Part("description") description: RequestBody,
         @Part file: MultipartBody.Part
-    ):Call<AddStoryResponse>
+    ): Call<AddStoryResponse>
 
 
     @GET("stories")
     fun getAllStories(
-        @Header("Authorization") token:String,
+        @Header("Authorization") token: String,
         @Query("page") page: Int?,
         @Query("size") size: Int?
-        ):Call<AllStoriesResponse>
+    ): Call<AllStoriesResponse>
 
 }
